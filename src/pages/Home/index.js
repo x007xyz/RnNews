@@ -1,6 +1,8 @@
 import React, {useState, useEffect, useRef} from 'react';
 
-import {StyleSheet, FlatList, View, Text, StatusBar} from 'react-native';
+import {StyleSheet, FlatList, View, StatusBar} from 'react-native';
+
+import {useNavigation} from '@react-navigation/native';
 
 import http from '../../utils/http';
 import MyStatusBar from '../../components/MyStatusBar';
@@ -18,6 +20,7 @@ const getList = (columnId = 0, minId = 0) => {
 };
 
 function Home() {
+  const navigation = useNavigation();
   const [list, setList] = useState([]);
   const [selectedNewsId, setSelectedNewsId] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
@@ -46,10 +49,11 @@ function Home() {
   };
   return (
     <View style={styles.container}>
-      <MyStatusBar barStyle="light-content" backgroundColor="#2f85fc" />
-      <View style={styles.header}>
-        <Text style={styles.title}>新闻资讯</Text>
-      </View>
+      <StatusBar
+        translucent
+        backgroundColor="#2f85fc"
+        barStyle="light-content"
+      />
       <Tabs selectedNewsId={selectedNewsId} onChange={setSelectedNewsId} />
       <FlatList
         ref={ref}
@@ -58,7 +62,12 @@ function Home() {
         onEndReachedThreshold={0.2}
         onEndReached={onEndReached}
         refreshing={refreshing}
-        renderItem={({item}) => <NewsItem news={item} />}
+        renderItem={({item}) => (
+          <NewsItem
+            news={item}
+            onClick={(id) => navigation.navigate('Detail', {id})}
+          />
+        )}
         keyExtractor={(item) => item.id.toString()}
       />
     </View>

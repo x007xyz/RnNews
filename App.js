@@ -5,22 +5,45 @@
  * @format
  * @flow strict-local
  */
-
+import 'react-native-gesture-handler';
 import React from 'react';
-import {NativeRouter, Route} from 'react-router-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
 import Home from './src/pages/Home';
 import Detail from './src/pages/Detail';
 
-const App: () => React$Node = () => {
+const Stack = createStackNavigator();
+
+const App = () => {
   return (
-    <NativeRouter>
-      <Route exact path="/">
-        <Home />
-      </Route>
-      <Route path="/detail">
-        <Detail />
-      </Route>
-    </NativeRouter>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen
+          name="Home"
+          component={Home}
+          options={{
+            title: '新闻资讯',
+            headerStyle: {backgroundColor: 'rgb(47, 133, 252)'},
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
+          }}
+        />
+        <Stack.Screen
+          name="Detail"
+          component={Detail}
+          options={{
+            title: '新闻详情',
+            headerStyle: {backgroundColor: 'rgb(47, 133, 252)'},
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
+          }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 };
 

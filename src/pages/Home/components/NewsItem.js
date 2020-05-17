@@ -1,12 +1,13 @@
 import React from 'react';
-import {View, Text, StyleSheet, Image} from 'react-native';
-import {Link} from 'react-router-native';
+import {View, Text, StyleSheet, Image, TouchableHighlight} from 'react-native';
 
 function NewsItem(props) {
-  const {news} = props;
+  const {news, onClick} = props;
   return (
     <View style={styles.container}>
-      <Link to="/detail">
+      <TouchableHighlight
+        underlayColor="#eee"
+        onPress={() => onClick(news.post_id)}>
         <View style={styles.main}>
           <Image style={styles.image} source={{uri: news.cover}} />
           <View style={styles.titleWrapper}>
@@ -15,7 +16,7 @@ function NewsItem(props) {
             </Text>
           </View>
         </View>
-      </Link>
+      </TouchableHighlight>
       <View style={styles.info}>
         <Text style={styles.infoItem}>{news.author_name}</Text>
         <Text style={styles.infoItem}>发布于</Text>

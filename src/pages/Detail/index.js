@@ -1,55 +1,43 @@
-import React from 'react';
-import {View, Text, StyleSheet, TouchableHighlight} from 'react-native';
-import {useHistory} from 'react-router-native';
-import MyStatusBar from '../../components/MyStatusBar';
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  StatusBar,
+  ScrollView,
+  Dimensions,
+} from 'react-native';
+import {useRoute, useNavigation} from '@react-navigation/native';
+import HTMLView from 'react-native-render-html';
 
+import http from '../../utils/http';
 const styles = StyleSheet.create({
-  header: {
-    height: 44,
-    backgroundColor: 'rgb(47, 133, 252)',
+  main: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
     width: '100%',
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
-  },
-  headerMain: {
-    paddingHorizontal: 80,
-  },
-  headerMainText: {
-    fontSize: 16,
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-  backBtn: {
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    width: 44,
-    height: 44,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
 });
 function Detail(props) {
-  const history = useHistory();
-  const onBack = () => {
-    history.goBack();
-  };
+  const [detail, setDetail] = useState({});
+  const {params} = useRoute();
+  const navigation = useNavigation();
+  useEffect(() => {
+    http.get(`/news/36kr/${params.id}`).then((data) => setDetail(data));
+  }, [params]);
+  useEffect(() => {
+    navigation.setOptions({title: detail.title});
+  }, [navigation, detail]);
   return (
     <View>
-      <MyStatusBar barStyle="light-content" backgroundColor="#2f85fc" />
-      <View style={styles.header}>
-        <TouchableHighlight style={styles.backBtn} onPress={onBack}>
-          <Text>返回</Text>
-        </TouchableHighlight>
-        <View style={styles.headerMain}>
-          <Text style={styles.headerMainText}>详情</Text>
-        </View>
-      </View>
-      <Text>Detail</Text>
+      <StatusBar barStyle="light-content" backgroundColor="#2f85fc" />
+      <ScrollView style={styles.main}>
+        <HTMLView
+          html={detail.content}
+          tagsStyles={{img: {maxWidth: Dimensions.get('window').width}}}
+        />
+      </ScrollView>
     </View>
   );
 }
